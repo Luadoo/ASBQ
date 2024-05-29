@@ -18,7 +18,8 @@ Batch size: 256;
 LR: 32bit with {30,60,90} using {0.1, 0.1x0.1, 0.1x0.01}.
 
 ### Final 1bit student results:
-![Uploading image.png…]()
+![image](https://github.com/Luadoo/ASBQ/assets/58927660/ae922dfc-e3d0-4e1f-961d-42d7aacb0e4a)
+
 
 
 
