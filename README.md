@@ -1,4 +1,4 @@
-## The paper: Optimizing Binary Post-Training Quantization with Assistive Teaching and Coarse-grained Pruning. (Submitted to IEEE SPL)
+![image](https://github.com/Luadoo/ASBQ/assets/58927660/7ea40496-6df2-4c82-991a-d38074e0cbdc)## The paper: Optimizing Binary Post-Training Quantization with Assistive Teaching and Coarse-grained Pruning. (Submitted to IEEE SPL)
 
 ### Training teacher or simple student with the command:
 python main.py --epochs 160 --student resnet20 --student-wbits 32 --student-abits 32 --dataset imagenet --trial-id 'imagenet-32bit'
@@ -16,5 +16,10 @@ LR: 32bit,8bit,4bit with {80,120,180} using {0.1, 0.1x0.01, 0.1x0.001}; 2bit,1bi
 epoch: 32bit,1bit is 100 epoch, others 60 epoch;
 Batch size: 256;
 LR: 32bit with {30,60,90} using {0.1, 0.1x0.1, 0.1x0.01}.
+
+### Final 1bit student results:
+
+![Uploading image.png…]()
+
 
 
