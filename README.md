@@ -1,4 +1,4 @@
-![image](https://github.com/Luadoo/ASBQ/assets/58927660/7ea40496-6df2-4c82-991a-d38074e0cbdc)## The paper: Optimizing Binary Post-Training Quantization with Assistive Teaching and Coarse-grained Pruning. (Submitted to IEEE SPL)
+## The paper: Optimizing Binary Post-Training Quantization with Assistive Teaching and Coarse-grained Pruning. (Submitted to IEEE SPL)
 
 ### Training teacher or simple student with the command:
 python main.py --epochs 160 --student resnet20 --student-wbits 32 --student-abits 32 --dataset imagenet --trial-id 'imagenet-32bit'
