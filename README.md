@@ -19,7 +19,7 @@ python main.py --epochs 100 --teacher resnet18 --teacher-checkpoint /mnt/quantiK
 
 ### Final the 1bit student results in the ImageNet:
 
-<img width="250" alt="result123" src="https://github.com/Luadoo/ASBQ/assets/58927660/4b8679ab-5b26-44e2-b768-700583128d39">.
+<img width="366" alt="result123" src="https://github.com/Luadoo/ASBQ/assets/58927660/4b8679ab-5b26-44e2-b768-700583128d39">.
 
 ### JSON.file results:
 * 1) [accuracy_resnet18_imagenet-100ep-32bit.json](https://github.com/Luadoo/ASBQ/files/15478935/accuracy_resnet18_imagenet-100ep-32bit.json)
