@@ -18,9 +18,4 @@ python main.py --epochs 100 --teacher resnet18 --teacher-checkpoint /mnt/quantiK
 *LR: 32bit with {30,60,90} using {0.1, 0.1x0.1, 0.1x0.01}.
 
 ### Final 1bit student results:
-
-<img src="![image](https://github.com/Luadoo/ASBQ/assets/58927660/ae922dfc-e3d0-4e1f-961d-42d7aacb0e4a)." alt="Image" width="400" height="300">
-
-
-
-
+<img width="340" alt="result12" src="https://github.com/Luadoo/ASBQ/assets/58927660/63fcbaa7-ca41-4943-a1e0-9118f6e11cd2">
