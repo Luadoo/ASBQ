@@ -18,7 +18,6 @@ Batch size: 256;
 LR: 32bit with {30,60,90} using {0.1, 0.1x0.1, 0.1x0.01}.
 
 ### Final 1bit student results:
-
 ![Uploading image.png…]()
 
 
