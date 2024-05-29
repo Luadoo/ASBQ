@@ -19,7 +19,7 @@ python main.py --epochs 100 --teacher resnet18 --teacher-checkpoint /mnt/quantiK
 
 ### Final 1bit student results:
 
-<img src="![image](https://github.com/Luadoo/ASBQ/assets/58927660/ae922dfc-e3d0-4e1f-961d-42d7aacb0e4a)" alt="Image" width="400" height="300">
+<img src="![image](https://github.com/Luadoo/ASBQ/assets/58927660/ae922dfc-e3d0-4e1f-961d-42d7aacb0e4a)." alt="Image" width="400" height="300">
 
 
 
