@@ -26,3 +26,6 @@ python main.py --epochs 100 --teacher resnet18 --teacher-checkpoint /mnt/quantiK
 * B. Zhuang, M. Tan, J. Liu, L. Liu, I. Reid, and C. Shen, “Effective training of convolutional neural networks with low-bitwidth weights and activations,” IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 44, no. 10, pp. 6140–6152, 2021.  (DOI: 10.1109/TPAMI.2021.3088904)
 * S. Han, H. Mao, and W. J. Dally, “Deep compression: Compressing deep neural networks with pruning, trained quantization and huffman coding,” arXiv preprint arXiv:1510.00149, 2015.
 * H. Wu, R. He, H. Tan, X. Qi, and K. Huang, “Vertical layering of quantized neural networks for heterogeneous inference,” IEEE Transactions on Pattern Analysis and Machine Intelligence, 2023. (DOI:10.1109/TPAMI.2023.3319045)
+
+### Contact:
+Email: soark@ajou.ac.kr
