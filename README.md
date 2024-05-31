@@ -23,8 +23,9 @@ python main.py --epochs 100 --teacher resnet18 --teacher-checkpoint /mnt/quantiK
 
 ### Final the 1bit student results in the ImageNet:
 
+<img width="366" alt="github1" src="https://github.com/Luadoo/ASBQ/assets/58927660/19736dd7-2221-48f7-96c5-99f260359aa0">
 
-<img width="366" alt="result123" src="https://github.com/Luadoo/ASBQ/assets/58927660/4b8679ab-5b26-44e2-b768-700583128d39">.
+
 
 
 ### Reference:
