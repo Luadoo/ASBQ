@@ -22,10 +22,7 @@ python main.py --epochs 100 --teacher resnet18 --teacher-checkpoint /mnt/quantiK
 <img width="366" alt="result123" src="https://github.com/Luadoo/ASBQ/assets/58927660/4b8679ab-5b26-44e2-b768-700583128d39">.
 
 #### The JSON.file results:
-* (1) [accuracy_resnet18_imagenet-100ep-32bit.json](https://github.com/Luadoo/ASBQ/files/15478935/accuracy_resnet18_imagenet-100ep-32bit.json)
-* (2) [accuracy_resnet18_imagenet-60ep-0.01lr-32-8bit.json](https://github.com/Luadoo/ASBQ/files/15478937/accuracy_resnet18_imagenet-60ep-0.01lr-32-8bit.json)
-* (3) [accuracy_resnet18_imagenet-60ep-0.01lr-8-4bit.json](https://github.com/Luadoo/ASBQ/files/15478938/accuracy_resnet18_imagenet-60ep-0.01lr-8-4bit.json)
-* (4) [accuracy_resnet18_imagenet-100ep-0.01lr-4-1bit.json](https://github.com/Luadoo/ASBQ/files/15478939/accuracy_resnet18_imagenet-100ep-0.01lr-4-1bit.json)
+* 
 
 
 ### Reference:
