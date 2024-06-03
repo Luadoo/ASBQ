@@ -15,7 +15,7 @@ python main.py --epochs 100 --teacher resnet18 --teacher-checkpoint /mnt/quantiK
 ### From our experience with hyperparameters in ImageNet:
 * epoch: 32bit,1bit is 100 epoch, others 60 epoch;
 * Batch size: 256;
-* LR: 32bit with {30,60,90} using {0.1, 0.1x0.1, 0.1x0.01}.
+* LR: 32bit with {30,60,90} using {0.1, 0.1x0.1, 0.1x0.01}; 1bit with {30,60,90} using {0.01, 0.01x0.1, 0.01x0.01}.
 
 #### The ResNet-20 checkpoint. pth and JSON.file results:
 * [resnet20-cifar10.zip](https://github.com/user-attachments/files/15507611/resnet20-cifar10.zip) (each training stage was take 2hours finished.)
