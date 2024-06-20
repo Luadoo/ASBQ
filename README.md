@@ -10,12 +10,12 @@ python main.py --epochs 100 --teacher resnet18 --teacher-checkpoint /mnt/quantiK
 ### From our experience with hyperparameters in CIFAR-10/100:
 * epoch: 240;
 * Batch size: 128;
-* LR: for 32bit,8bit,4bit with {80,120,180} using {0.1, 0.1x0.01, 0.1x0.001}; for 2bit,1bit with {80,120,180} using {0.01, 0.01x0.01, 0.01x0.001}.
+* learning rate: for 32bit,8bit,4bit with {80,120,180} using {0.1, 0.1x0.01, 0.1x0.001}; for 2bit,1bit with {80,120,180} using {0.01, 0.01x0.01, 0.01x0.001}.
 
 ### From our experience with hyperparameters in ImageNet:
 * epoch: for 32bit,1bit is 100 epoch, others 60 epoch;
 * Batch size: 256;
-* LR: for 32bit with {30,60,90} using {0.1, 0.1x0.1, 0.1x0.01}; for 1bit with {30,60,90} using {0.01, 0.01x0.1, 0.01x0.01}.
+* learning rate: for 32bit with {30,60,90} using {0.1, 0.1x0.1, 0.1x0.01}; for 1bit with {30,60,90} using {0.01, 0.01x0.1, 0.01x0.01}.
 
 #### The ResNet-20 checkpoint. pth and JSON.file results:
 * [resnet20-cifar10.zip](https://github.com/user-attachments/files/15507611/resnet20-cifar10.zip) (each training stage was take 2hours finished.)
