@@ -23,8 +23,8 @@ python main.py --epochs 100 --teacher resnet18 --teacher-checkpoint /mnt/quantiK
 
 ### Final the 1bit student results in the ImageNet:
 * Our ASBQ outperforms recent work LKBQ (PTQ) methods, we push the limit of QAT in BNN using knowledge transfer with 10.37% outperforms.
-<img width="366" alt="github1" src="https://github.com/Luadoo/ASBQ/assets/58927660/19736dd7-2221-48f7-96c5-99f260359aa0">
-<img width="366" alt="github1" src="https://github.com/Luadoo/ASBQ/assets/58927660/44e2a42a-8b13-4b32-b2f1-2be27ce95209">
+<img width="388" alt="github1" src="https://github.com/Luadoo/ASBQ/assets/58927660/19736dd7-2221-48f7-96c5-99f260359aa0">
+<img width="388" alt="github1" src="https://github.com/Luadoo/ASBQ/assets/58927660/44e2a42a-8b13-4b32-b2f1-2be27ce95209">
 
 
 
