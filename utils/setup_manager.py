@@ -64,45 +64,12 @@ def parse_arguments():
 def main():
     args = parse_arguments()
 
-
-
-   # device = 'cuda' if torch.cuda.is_available() and args.cuda >= 0 else 'cpu'
-    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')             ##
-    # torch.backends.cudnn.enable = True
-    # torch.backends.cudnn.benchmark = True
-
-    # ASSIGN CUDA_ID
-  #  os.environ['CUDA_VISIBLE_DEVICES'] = "0, 1, 2, 3"
-    # opt.gpu_id = 0, 1, 2, 3
-
-
-    # net = resnet18_imagenet(wbit, abit, q_method='dorefa')
-    # net = net.to(device)
-    # if device == 'cuda':
-    #     net = torch.nn.DataParallel(net)
-    #     cudnn.benchmark = True
-
-    #
-    # if device == 'cuda':
-    #     net = torch.nn.DataParallel(net)
-    #     cudnn.benchmark = True
-    #
-    # return args, device, net
-    # resnet_models= resnet_models.to(device)
-    # torch.nn.DataParallel(resnet_models)
-
     if args.cuda >= 0:
         os.environ['CUDA_VISIBLE_DEVICES'] = str(args.cuda)
         cudnn.benchmark = True
 
     model = resnet_quant.resnet_models()
-   # model = model.to(device)
-    #
-    # if args.teacher_check_point:
-    #     model = load_checkpoint(model, args.teacher_checkpoint)
-    # if torch.cuda.device_count() > 1 and device.type == 'cuda':
-    #     model = nn.DataParallel(model)
-    #     cudnn.benchmark = True
+    
     if args.cuda >= 0:
         #torch.nn.parallel.DistributedDataParallel(resnet_models)
       #  torch.cuda.set_device(args.cuda)                    ##
@@ -141,41 +108,6 @@ def load_checkpoint(model, checkpoint_path):
 
     return model
 
-# def main():
-#     args, device, net= parse_arguments()
-#     model = resnet18_imagenet()
-#
-#     model = model.to(device)
-#     if args.teacher_checkpoint:
-#         model = load_checkpoint(model, args.teacher_chepoint)
-#     if args.cuda >= 0:
-#         model = torch.nn.DataParallel(model, device_ids=[args.cuda])
-#     else:
-#         model = torch.nn.DataParallel(model)
-#
-#
+
 if __name__ == "__main__":
     main()
-
-# def main():
-#     args = parse_arguments()
-#
-#     # Initialize your model (replace 'YourModel()' with the actual model class)
-#     model = resnet18_imagenet()
-#
-#     # Move the model to the specified device
-#     if args.cuda >= 0:
-#         model = model.to(torch.device('cuda', args.cuda))
-#
-#     # Load the checkpoint
-#     if args.teacher_checkpoint:
-#         model = load_checkpoint(model, args.teacher_checkpoint)
-#
-#     # Wrap the model with DataParallel
-#     if args.cuda >= 0:
-#         model = torch.nn.DataParallel(model, device_ids=[args.cuda])
-#
-#     # Rest of your main function code...
-#
-# if __name__ == "__main__":
-#      main()
