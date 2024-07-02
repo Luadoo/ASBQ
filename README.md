@@ -1,4 +1,4 @@
-## The paper: Optimizing Binary Neural Networks with Bit-width Assistive Teacher and Structured Pruning. (Submitted to **)
+## The paper: Optimizing Binary Neural Networks with Bit-width Assistive Teacher and Structured Pruning.
 
 ### Training teacher or simple student with the command:
 * python main.py --epochs 240 --student resnet20 --student-wbits 32 --student-abits 32 --dataset imagenet --trial-id 'imagenet-32bit'
