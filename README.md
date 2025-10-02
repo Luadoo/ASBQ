@@ -1,4 +1,4 @@
-## The paper: Progressive Quantization: Enhancing Stability in Binary Neural Networks. Submitted to the Multimedia Tools and Applications journal.
+## The paper: Progressive Quantization: Enhancing Stability in Binary Neural Networks. (Submitted to the Multimedia Tools and Applications journal.)
 
 ### Training teacher or simple student with the command:
 * python main.py --epochs 240 --student resnet20 --student-wbits 32 --student-abits 32 --dataset imagenet --trial-id 'imagenet-32bit'
