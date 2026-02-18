@@ -112,7 +112,7 @@ class TrainManager(object):
 
                     loss_KD = nn.KLDivLoss()(F.log_softmax(output / T, dim=1),
                                                       F.softmax(teacher_outputs / T, dim=1))
-                    loss = (1 - lambda_) * loss_SL + lambda_ * T  * T * loss_KD
+                    loss = (1 - lambda_) * loss_SL + lambda_ * T  * 2 * T * loss_KD
 
                 print("Batch %d of %d , loss %.3f"%(batch_idx, total_batches, loss),end="\r")
                 #print('before loss backward')
