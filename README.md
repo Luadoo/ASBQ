@@ -1,10 +1,10 @@
 ## The paper: Adaptive Multi-bit Progressive Quantization for Stable Training of Binary Neural Networks. (Submitted to the Multimedia Tools and Applications journal.)
 ### Environment
-1. conda create -n asbq python=3.8         
+1. conda create -n asbq python=3.8 -y
 2. conda activate asbq
 3. conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
 
-### Training teacher or simple student with the command:
+### Training a teacher or a simple student with the command:
 * python main.py --epochs 240 --student resnet20 --student-wbits 32 --student-abits 32 --dataset cifar10 --trial-id '32bit'
 * python main.py --epochs 240 --student resnet20 --student-wbits 1 --student-abits 1 --dataset cifar10 --trial-id '1bit'
 
