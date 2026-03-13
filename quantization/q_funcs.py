@@ -22,7 +22,7 @@ def uniform_quantize(k):
         out = input
       elif k == 1:
         sign = torch.sign(input)
-        out = sign * torch.floor(torch.abs(input) + 0.5)
+        out = sign * torch.floor(torch.abs(input) + 0.5)  # this is for faster training, is option
        # out = sign * (torch.floor(torch.abs(input) + 0.5) ** (1 / 2))
       # elif k == 2:
       #   sign = torch.sign(input)
