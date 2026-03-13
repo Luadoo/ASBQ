@@ -103,27 +103,22 @@ class PreActBasicBlock_convQ(nn.Module):
 ##  Plan A: residual module
     def forward(self, x):
         residual = x
-        out = self.conv1(x)
 
         # activation qunatization applied here
-        
+        out = self.bn1(x)
         out = self.act_qfn(self.relu(out))
-        out = self.bn1(out)
+        out = self.conv1(out)
+        
 
         # TODO: check how residual is accounted for. DoReFa seems to leave residual full precision??
         if self.downsample is not None:
             residual = self.downsample(x)
 
-        
-        
-        out = self.conv2(out)
-        out = self.act_qfn(self.relu(out))
         out = self.bn2(out)
+        out = self.act_qfn(self.relu(out))
+        out = self.conv2(out)
         
-
         out += residual
-     ##   out = self.dropout(out)
-       # out = self.relu(out)
 
         return out
         
