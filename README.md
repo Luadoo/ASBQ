@@ -12,12 +12,12 @@
 python main.py --epochs 100 --teacher resnet18 --teacher-checkpoint /mnt/quantiKD/TA-bnn/states/your_checkpoint_position_in_here_best.pth.tar --teacher-wbits 32 --teacher-abits 32 --student resnet18 --student-wbits 8 --student-abits 8 --dataset imagenet --trial-id 'imagenet-32-8bit' --weight-decay 1e-4
 
 ### From our experience with hyperparameters in CIFAR-10/100:
-* epoch: 240;
+* epoch: 240; (It is an option for every model, for example: 32bit -> 8bit, only using 150 epochs)
 * Batch size: 128;
 * learning rate: for 32bit,8bit,4bit with {80,120,180} using {0.1, 0.1x0.01, 0.1x0.001}; for 2bit,1bit with {80,120,180} using {0.01, 0.01x0.01, 0.01x0.001}.
 
 ### From our experience with hyperparameters in ImageNet:
-* epoch: for 32bit,1bit is 100 epoch, others 60 epoch; (It is option for every model)
+* epoch: for 32bit,1bit is 100 epoch, others 60 epoch; (It is an option for every model)
 * Batch size: 256;
 * learning rate: for 32bit with {30,60,90} using {0.1, 0.1x0.1, 0.1x0.01}; for 1bit with {30,60,90} using {0.01, 0.01x0.1, 0.01x0.01}.
 
