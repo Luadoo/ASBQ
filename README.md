@@ -17,7 +17,7 @@ python main.py --epochs 100 --teacher resnet18 --teacher-checkpoint /mnt/quantiK
 * learning rate: for 32bit,8bit,4bit with {80,120,180} using {0.1, 0.1x0.01, 0.1x0.001}; for 2bit,1bit with {80,120,180} using {0.01, 0.01x0.01, 0.01x0.001}.
 
 ### From our experience with hyperparameters in ImageNet:
-* epoch: for 32-bit,1-bit is 100 epochs (It is an option, for example: 32-bit -> 8-bit, only using 80 epochs)
+* epoch: for 32-bit,1-bit is 100 epochs (It is an option, for example: 32-bit -> 8-bit, only using 60 epochs)
 * Batch size: 256;
 * learning rate: for 32bit with {30,60,90} using {0.1, 0.1x0.1, 0.1x0.01}; for 1bit with {30,60,90} using {0.01, 0.01x0.1, 0.01x0.01}.
 
