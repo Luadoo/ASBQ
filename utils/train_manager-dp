@@ -1,0 +1,255 @@
+# train_manager.py
+import os
+import json
+import torch
+import copy
+import torch.optim as optim
+import torch.nn as nn
+import torch.nn.functional as F
+
+from utils.setup_manager import parse_arguments, load_checkpoint, get_device_and_gpu_ids, wrap_model_dp
+from utils.dataset_loader import get_dataset
+from resnet_quant import get_quant_model, is_resnet
+
+
+class TrainManager(object):
+    def __init__(self, student, teacher=None, train_loader=None, test_loader=None, train_config={}):
+        self.student = student
+        self.teacher = teacher
+        self.have_teacher = bool(self.teacher)
+        self.device = train_config['device']
+        self.gpu_ids = train_config.get('gpu_ids', [])   #  新增
+
+        #  用 wrap_model_dp 包装：先 to(device)，再按 gpu_ids 决定是否 DataParallel
+        self.student = wrap_model_dp(self.student, self.device, self.gpu_ids)
+
+        self.name = train_config['name']
+        self.epochs = train_config['epochs']
+        self.optimizer = optim.SGD(
+            self.student.parameters(),
+            lr=train_config['learning_rate'],
+            momentum=train_config['momentum'],
+            nesterov=True,
+            weight_decay=train_config['weight_decay']
+        )
+
+        if self.have_teacher:
+            self.teacher.eval()
+            self.teacher.train(mode=False)
+
+        self.train_loader = train_loader
+        self.test_loader = test_loader
+        self.config = train_config
+        self.accuracy_history = []
+
+    def train(self):
+        lambda_ = self.config['lambda_student']
+        T = self.config['T_student']
+        epochs = self.config['epochs']
+        trial_id = self.config['trial_id']
+
+        iteration = 0
+        best_acc = 0
+        criterion = nn.CrossEntropyLoss()
+
+        for epoch in range(epochs):
+            self.student.train()
+            self.adjust_learning_rate(self.optimizer, epoch)
+
+            epoch_loss = 0.0
+            total_batches = len(self.train_loader)
+
+            for batch_idx, (data, target) in enumerate(self.train_loader):
+                iteration += 1
+                data = data.to(self.device)
+                target = target.to(self.device)
+                self.optimizer.zero_grad()
+                output = self.student(data)
+
+                loss_SL = criterion(output, target)
+                loss = loss_SL
+
+                if self.have_teacher:
+                    teacher_outputs = self.teacher(data)
+                    loss_KD = nn.KLDivLoss(reduction='batchmean')(
+                        F.log_softmax(output / T, dim=1),
+                        F.softmax(teacher_outputs / T, dim=1)
+                    )
+                    loss = (1 - lambda_) * loss_SL + lambda_ * T * 2 * T * loss_KD
+
+                epoch_loss += loss.item()
+                print("Batch %d of %d , loss %.3f" % (batch_idx, total_batches, loss), end="\r")
+                loss.backward(retain_graph=True)
+                self.optimizer.step()
+
+            avg_train_loss = epoch_loss / total_batches
+            print("epoch {}/{}".format(epoch, epochs))
+            val_acc = self.validate(step=epoch)
+
+            if val_acc > best_acc:
+                best_acc = val_acc
+                self.save(epoch, name='states/{}_{}_best.pth.tar'.format(self.name, trial_id))
+                self.save_weights_only(name='states/{}_{}_best_weights.pth'.format(self.name, trial_id))
+
+            self.accuracy_history.append({
+                "epoch": epoch,
+                "val_acc": val_acc,
+                "train_loss": round(avg_train_loss, 6)
+            })
+            self.save_accuracy()
+
+        return best_acc
+
+    def analyze_weight_distribution(self):
+        #  兼容 DataParallel
+        model = self.student.module if isinstance(self.student, nn.DataParallel) else self.student
+
+        for name, module in model.named_modules():
+            if hasattr(module, 'quantize_fn') and module.quantize_fn.w_bit == 1:
+                w = module.weight.detach()
+                E = torch.mean(torch.abs(w))
+                w_norm = w / E
+                q = torch.sign(w_norm) * torch.floor(torch.abs(w_norm) + 0.5)
+
+                total = q.numel()
+                is_one   = (q.abs() == 1).sum().item()
+                is_zero  = (q == 0).sum().item()
+                is_other = total - is_one - is_zero
+
+                print(f"\n层: {name}")
+                print(f"  ±1 比例:   {is_one/total:.2%}")
+                print(f"   0 比例:   {is_zero/total:.2%}")
+                print(f"  超出比例: {is_other/total:.2%}")
+                print(f"  unique值: {torch.unique(q).tolist()}")
+
+    def save_accuracy(self):
+        accuracy_file = f'accuracy_{self.name}_{self.config["trial_id"]}.json'
+        with open(accuracy_file, 'w') as f:
+            json.dump(self.accuracy_history, f, indent=2)
+
+    def validate(self, step=0):
+        self.student.eval()
+        with torch.no_grad():
+            correct = 0
+            total = 0
+            for images, labels in self.test_loader:
+                images = images.to(self.device)
+                labels = labels.to(self.device)
+                outputs = self.student(images)
+                _, predicted = torch.max(outputs.data, 1)
+                total += labels.size(0)
+                correct += (predicted == labels).sum().item()
+            acc = 100 * correct / total
+            print('{{"metric": "{}_val_accuracy", "value": {}}}'.format(self.name, acc))
+            return acc
+
+    def _get_raw_state_dict(self):
+        """ 统一剥离 DataParallel，返回裸模型的 state_dict"""
+        raw = self.student.module if isinstance(self.student, nn.DataParallel) else self.student
+        return raw.state_dict()
+
+    def save(self, epoch, name=None):
+        state_dict = self._get_raw_state_dict()   #  保存裸权重，不含 'module.' 前缀
+        trial_id = self.config['trial_id']
+        path = name if name else 'states/{}_{}_epoch{}.pth.tar'.format(self.name, trial_id, epoch)
+        torch.save({
+            'epoch': epoch,
+            'model_state_dict': state_dict,
+            'optimizer_state_dict': self.optimizer.state_dict(),
+        }, path)
+
+    def save_weights_only(self, name=None):
+        state_dict = self._get_raw_state_dict()   #  同上
+        trial_id = self.config['trial_id']
+        save_path = name if name else 'states/{}_{}_weights.pth'.format(self.name, trial_id)
+        torch.save(state_dict, save_path)
+        print(f"[Weights Saved] → {save_path}")
+
+    def adjust_learning_rate(self, optimizer, epoch):
+        if epoch < 80:
+            lr = 0.01
+        elif epoch < 120:
+            lr = 0.01 * 0.1
+        elif epoch < 180:
+            lr = 0.001 * 0.1
+        else:
+            lr = 0.001 * 0.001
+        for param_group in optimizer.param_groups:
+            param_group['lr'] = lr
+
+
+def train_teacher(args, train_config, device, gpu_ids):
+    dataset = train_config['dataset']
+    teacher_model = get_quant_model(
+        args.teacher,
+        (args.teacher_wbits, args.teacher_abits, args.teacher_quantization),
+        dataset, use_cuda=(args.cuda >= 0)
+    )
+    if args.teacher_checkpoint:
+        print("---------- Loading Teacher -------")
+        teacher_model = wrap_model_dp(teacher_model, device, gpu_ids)
+        teacher_model = load_checkpoint(teacher_model, args.teacher_checkpoint, device)
+    else:
+        print("---------- Training Teacher -------")
+        train_loader, test_loader = get_dataset(dataset)
+        teacher_train_config = copy.deepcopy(train_config)
+        teacher_name = 'states/{}_{}_best.pth.tar'.format(args.teacher, train_config['trial_id'])
+        teacher_train_config['name'] = args.teacher
+        teacher_train_config['device'] = device
+        teacher_train_config['gpu_ids'] = gpu_ids        #  传入 gpu_ids
+        teacher_trainer = TrainManager(
+            teacher_model, teacher=None,
+            train_loader=train_loader, test_loader=test_loader,
+            train_config=teacher_train_config
+        )
+        teacher_trainer.train()
+        # 重新加载最优权重
+        raw_teacher = get_quant_model(
+            args.teacher,
+            (args.teacher_wbits, args.teacher_abits, args.teacher_quantization),
+            dataset, use_cuda=(args.cuda >= 0)
+        )
+        raw_teacher = wrap_model_dp(raw_teacher, device, gpu_ids)
+        teacher_model = load_checkpoint(raw_teacher, os.path.join('./', teacher_name), device)
+    return teacher_model
+
+
+def train_student(args, train_config, device, gpu_ids, teacher_model=None):
+    dataset = train_config['dataset']
+    student_model = get_quant_model(
+        args.student,
+        (args.student_wbits, args.student_abits, args.student_quantization),
+        dataset, use_cuda=(args.cuda >= 0)
+    )
+
+    if teacher_model is None:
+        print("---------- No Teacher -------------")
+        print("---------- Training Student -------")
+    else:
+        # 用 teacher 权重初始化 student 同名参数
+        raw_teacher = teacher_model.module if isinstance(teacher_model, nn.DataParallel) else teacher_model
+        params1 = raw_teacher.named_parameters()
+        params2 = student_model.named_parameters()
+        dict_params2 = dict(params2)
+        for name1, param1 in params1:
+            if name1 in dict_params2:
+                dict_params2[name1].data.copy_(param1.data)
+        print("---------- Training Student -------")
+
+    student_train_config = copy.deepcopy(train_config)
+    train_loader, test_loader = get_dataset(dataset)
+    student_train_config['name'] = args.student
+    student_train_config['device'] = device
+    student_train_config['gpu_ids'] = gpu_ids            #  传入 gpu_ids
+    student_trainer = TrainManager(
+        student_model, teacher=teacher_model,
+        train_loader=train_loader, test_loader=test_loader,
+        train_config=student_train_config
+    )
+    best_student_acc = student_trainer.train()
+    print(f'best_student_acc: {best_student_acc}')
+
+    student_trainer.save_weights_only(
+        name='states/{}_{}__final_weights.pth'.format(args.student, train_config['trial_id'])
+    )
+    return student_model
