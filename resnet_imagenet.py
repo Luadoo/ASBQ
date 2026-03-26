@@ -17,10 +17,10 @@ from torch.nn import PReLU
 import torch.nn.functional as F
 from torch.nn.utils import prune
 # import torch.nn.init as init
-import matplotlib.pyplot as plt
-from PIL import Image
-from torchvision import transforms
-from ops import SyncSwitchableNorm2d, SwitchNorm2d, SyncBatchNorm2d
+#import matplotlib.pyplot as plt
+#from PIL import Image
+#from torchvision import transforms
+#from ops import SyncSwitchableNorm2d, SwitchNorm2d, SyncBatchNorm2d
 
 
 class Conv2d_Q(nn.Conv2d):
