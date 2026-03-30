@@ -27,7 +27,8 @@ python main.py --epochs 100 --teacher resnet18 --teacher-checkpoint /mnt/quantiK
 
 ### Finally, the 1-bit student results in the ImageNet:
 * Our ASBQ outperforms recent work SKD-BNN methods; we push the limit of QAT in BNN using knowledge transfer, with reality outperformance. The SKD-BNN code resource report states that the training is bad, and testing is good.
-<img width="388" alt="github1" src="https://github.com/Luadoo/ASBQ/assets/58927660/e9d432e7-9973-4709-8d39-3be4b0c3d54b">
+<img width="378" height="244" alt="image" src="https://github.com/user-attachments/assets/52e17afd-33f4-4ba0-8cec-e53016af83bb" />
+
 <img width="388" alt="github1" src="https://github.com/Luadoo/ASBQ/assets/58927660/44e2a42a-8b13-4b32-b2f1-2be27ce95209">
 
 
